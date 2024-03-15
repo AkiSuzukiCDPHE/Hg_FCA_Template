@@ -1,13 +1,10 @@
 # R SCRIPT FOR CLEANING THE MERCURY DATA set
 
-# setting a working directory
-setwd("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA")
-getwd
-
-
-# importing xlsx files of raw data. 
+# importing xlsx files of raw data from the past year's sampling efforts 
 install.packages("readxl")
 library(readxl)
+
+# sub this out for the new data
 HgData <- read_excel("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/01_Raw_Data/HgData_Clean.xlsx")
 
 # Step 1: Rename variables with long names. The variable number position may change with
@@ -27,14 +24,7 @@ HgData_1 <- HgData[HgData$Tissue_Type %in% c('M','Plug'),]
 # Run a frequency table to make sure filtering for M and Plug worked
 table(HgData_1$Tissue_Type)
 
-# Step 3: Delete samples collected in 2004 to remove error where Hg result is listed as
-# < MDL but value is above the listed MDL. 
-HgData_1 <- HgData[HgData$Sample_Year!= 2004,]
-
-# Confirm you removed the 2004 samples by running a frequency table
-table(HgData_1$Sample_Year)
-
-# Step 4: Create a new column titled "species" and populate with species names, including lumping species as specified
+# Step 3: Create a new column titled "species" and populate with species names, including lumping species as specified
 #4a. NPK & NPKB = Northern pike"
 #4b. WALB & WAL = "Walleye"
 #4c. SMBB & SMB = "Smallmouth bass"
@@ -103,7 +93,10 @@ HgData_2 <- HgData_1 %>%
 # Confirm that new variable with full specie's names was correctly added to the dataframe
 table(HgData_2$Species1)
 
-# Step 5:Lump waterbodies together if they have multiple names for the same waterbody
+# Step 4:Lump waterbodies together if they have multiple names for the same waterbody
+
+  # Example below:
+
   #5a. "Aglient Pond A", "Agilent Pond B", & "Agilent Ponds" = "Agilent Ponds"
   #5b. "Carter Lake" & "Carter Reservoir" = "Carter Lake"
   #5c. "Yampa River", "Yampa River 2", & "Yampa River 3" = "Yampa River"
@@ -120,7 +113,7 @@ HgData_3 <- HgData_2 %>%
                                TRUE ~ Waterbody1))
 
 
-# Step 6:Create a new variable, Species_Codes, with fish subspecies lumped together.
+# Step 5:Create a new variable, Species_Codes, with fish subspecies lumped together.
 HgData_3=HgData_3 %>%
   mutate(Species_Codes = case_when(Species1 == "SMBB" ~ "SMB",
                                    Species1 == "LMBB" ~ 'LMB',
@@ -133,42 +126,41 @@ HgData_3=HgData_3 %>%
                                    Species1 == "CRN" ~ "NAT",
                                    TRUE~Species1))
 
-# Step 7:Create new column denoting whether a species is in the existing statewide advisory. 
-  HgData_4 <- HgData_3 %>%
-  mutate(In_Existing_Advisory = case_when(Species1 %in% c("GRA", "SQF", "CFI", "FMS","GSD","GSF","HBG", 
-                                                    "LGS","PKS","SGR", "SPB","TRT","SXX") ~ "No",
-                                   TRUE ~ "Yes"))
 
-
-# Step 8: Create a new variable for whether a fish species is commonly consumed
+# Step 6: Create a new variable for whether a fish species is commonly consumed
   HgData_4 <- HgData_4 %>%
   mutate(Commonly_Consumed = case_when(Species1 %in% c("SQF", "CFI","FMS","GSD","GSF") ~ "No",
                                       TRUE ~ "Yes"))
 
 
-# Step 9: Replace non-detect values with the MDL/PQL. This step uses the case_when function to
+# Step 7: Replace non-detect values with the MDL/PQL. This step uses the case_when function to
 # replace values of one existing variable based on values of another existing variable.
   HgData_5 <- HgData_4 %>%
   mutate(Result=case_when(Qualifier == "<"~ MDL_PQL,
                                     TRUE~ Result))
   
-# Step 10: Create a new variable for fish length in inches based on the variable for length in mm
+# Step 8: Create a new variable for fish length in inches based on the variable for length in mm
   HgData_5$Length_Inches <- HgData_5$`Length (mm)`/25.4
   
-# Step 11: Delete the column Data_Cleaning_Notes 
+# Step 9: Delete the column Data_Cleaning_Notes 
   HgData_5 <- select( HgData_5,- Data_Cleaning_Notes)
   
-# Step 12: Rename Species1 (the original species code variable)
+# Step 10: Rename Species1 (the original species code variable)
   names(HgData_5)[18]="Old_Species_Codes"
   
 # Confirm rename worked
   colnames(HgData_5)
   
   
-# Step 13: insert code to merge old cleaned dataframe with new cleaned dataframe
-# For example: Hg_CleanedMaster_2024
+# Step 11: Merge the new and cleaned data (HgData_5) with the cleaned master dataset from the previous year’s update
+# This master dataset will be formatted as "Hg_CleanedMaster_PreviousYear."
   
-# Step 14: filter out crayfish and trout unspecified because these species should not be included in the cleaned data
+  # Insert code here for merging. For the 2024 update with the new 2023 data - the master dataset is saved in the output folder of the 
+  # Hg_FCA project and titled "Hg_CleanedMaster_2024"
+
+  
+  
+# Step 12: filter out crayfish and trout unspecified because these species should not be included in the cleaned data
 # Trout-unspecified is not a species and Crayfish is not a fish.
   HgData_Clean <- subset(HgData_5, !Species %in% c("Crayfish", "Trout - unspecified"))
   
@@ -176,9 +168,10 @@ HgData_3=HgData_3 %>%
   # HgData_Clean
 
 # Export the data frame as a cleaned master dataset for next year's analysis.
+# You will need to change the export destination
   
 #library("writexl")
-#Write_xlsx(HgData_Clean,"C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/03_Clean_Data//Hg_CleanedMaster_2024.xlsx")
+#Write_xlsx(HgData_Clean,"C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/03_Clean_Data//Hg_CleanedMaster_20XX.xlsx")
   
   
 
