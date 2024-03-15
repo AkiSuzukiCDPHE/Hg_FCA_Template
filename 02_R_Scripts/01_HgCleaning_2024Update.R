@@ -1,4 +1,4 @@
-# R SCRIPT FOR CLEANING THE MERCURY DATA 
+# R SCRIPT FOR CLEANING THE MERCURY DATA set
 
 # setting a working directory
 setwd("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA")
