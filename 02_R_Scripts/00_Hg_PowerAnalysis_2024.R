@@ -6,10 +6,12 @@ library(readr)
 library("tidyverse")
 
 
-# Upload the THE CLEANED PFOS DATASET - switch out mercury dataset
-fishclean <- read_csv("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/03_Clean_Data/fishclean.csv")
+# Upload the THE CLEANED MERCURY DATASET
+# Switch out for the master dataset from the most recent year of analysis.
+# Currently the most recent master dataset is "Hg_CleanedMaster_2024"
+HgData_Clean_Power <- read_csv("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/03_Clean_Data/HgData_Clean_Power.csv")
 
-# POWER ANALYSIS FOR PFOS DATA
+# POWER ANALYSIS FOR MERCURY DATA
 
 # STEP 1: Calculate the effect size
 # Effect size =(MeanH1-MeanH0)/SD
@@ -29,7 +31,7 @@ MeanH0 <- .091
 
 library(dplyr)
 
-mean_by_group <- fishclean %>%
+mean_by_group <- HgData_Clean_Power %>%
   group_by(Waterbody, Species) %>%
   summarise(mean_variable = mean(Result))
 
@@ -40,7 +42,7 @@ MeanH1 <- .1
 
 # Calculating Standard Deviation
 
-std_dev <- fishclean %>%
+std_dev <- HgData_Clean_Power %>%
   group_by(Waterbody, Species) %>%
   summarise_at(vars(Result), list(Standard_Dev=sd))
 
