@@ -5,7 +5,7 @@ install.packages("readxl")
 library(readxl)
 
 # sub this out for the new data
-HgData <- read_excel("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/01_Raw_Data/HgData_Clean.xlsx")
+HgData <- read_excel("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/01_Raw_Data/HgData_Raw.xlsx")
 
 # Step 1: Rename variables with long names. The variable number position may change with
 # different datasets. Double check before running.
