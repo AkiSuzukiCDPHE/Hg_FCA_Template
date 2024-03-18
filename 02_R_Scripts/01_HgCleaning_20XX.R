@@ -152,22 +152,24 @@ HgData_3=HgData_3 %>%
   colnames(HgData_5)
   
   
-# Step 11: Merge the new and cleaned data (HgData_5) with the cleaned master dataset from the previous year’s update
+# Step 11: Merge the new and cleaned data (HgData_5) with the cleaned master dataset from the previous year’s update.
+# This should be done using the bind rows function to append rows form each DF.
 # This master dataset will be formatted as "Hg_CleanedMaster_PreviousYear."
   
-  # Insert code here for merging. For the 2024 update with the new 2023 data - the master dataset is saved in the output folder of the 
+  # For the 2024 update with the new 2023 data - the master dataset is saved in the output folder of the 
   # Hg_FCA project and titled "Hg_CleanedMaster_2024"
 
+  Hg_CleanedMaster_20XX <- bind_rows(HgData_5, Hg_CleanedMaster_2024)
   
   
 # Step 12: filter out crayfish and trout unspecified because these species should not be included in the cleaned data
 # Trout-unspecified is not a species and Crayfish is not a fish.
-  HgData_Clean <- subset(HgData_5, !Species %in% c("Crayfish", "Trout - unspecified"))
+  HgData_Clean <- subset(Hg_CleanedMaster_20XX, !Species %in% c("Crayfish", "Trout - unspecified"))
   
-  # This is your cleaned data frame. 
+  # This is your cleaned data frame you will use for the subsequent scripts. 
   # HgData_Clean
 
-# Export the data frame as a cleaned master dataset for next year's analysis.
+# Export the data frame as a cleaned master dataset to save for next year's analysis.
 # You will need to change the export destination
   
 #library("writexl")

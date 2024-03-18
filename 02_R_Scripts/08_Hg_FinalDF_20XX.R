@@ -13,7 +13,10 @@ options(scipen = 999)
 HgSS_Final_AllPops_Censored20XX <- read_excel("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/04_Output/Hg_2024_Update/Site-specific_Hg_Advisory/SS_TimeNOTCensored_USETHIS/Semi_Final_Dataset/HgSS_Final_AllPops_Censored20XX.xlsx")
 
 
-# ADD A STEP TO FILTER FOR SPECIES THAT DO NOT MEET SAMPLE SIZE REQUIREMENTS AND "MANUAL REVIEW" != "Yes"
+# Filter out species that do not meet sample size requirements and have not been selected for manual review.
+# This sample size will change if the power analysis is rerun and produces a different result.
+HgSS_Final_AllPops1 <- HgSS_Final_AllPops_Censored20XX %>%
+  filter(!(Num_Obs<11 & Manual_Review != "Yes"))
 
 
 # Subset to df with all new and updated ss advisories for all populations
