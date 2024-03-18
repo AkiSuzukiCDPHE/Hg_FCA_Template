@@ -8,7 +8,7 @@ Hg_SS <- HgRegression_Final
 # Analysis 1 - Censoring the data for the ideal averaging period. 
 # For mercury always censor the data to be within the last 10 years.
 # Analysis 2 - Comment out the code below to censor the data so the analysis uses all samples from all of time.
-Hg_SS <- Hg_SS %>% filter (Sample_Year > "2014")
+Hg_SS <- Hg_SS %>% filter (Sample_Year >= "2014")
 
 # Calculate the average concentration (result) for each species by waterbody.
 # The group_by code means that the subsequent calculations will be applied separately for each

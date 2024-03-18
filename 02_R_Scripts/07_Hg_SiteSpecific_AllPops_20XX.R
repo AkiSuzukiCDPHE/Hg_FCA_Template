@@ -51,28 +51,41 @@ Hg_merged_all_3 <- Hg_merged_all_2 %>%
   select(
     Waterbody, Species_Codes, Old_Species_Codes, Species, Average_Result, Units, Num_Obs, FishType, Analyte1, Commonly_Consumed, Length_Inches, Pred_Length, 
     
-    GP_Meals_SS, GP_SS_Status, GP_Existing_SW, GP_Meals_SW,  Population_GP, GP_Status_Existing_SS, GP_Existing_SS,
+    GP_Meals_SS, GP_SS_Status, GP_Meals_SW,  Population_GP, GP_Status_Existing_SS, GP_Existing_SS,
     
-    WCBA_Meals_SS, WCBA_SS_Status, WCBA_Existing_SW, WCBA_Meals_SW, Population_WCBA, WCBA_Status_Existing_SS, WCBA_Existing_SS,
+    WCBA_Meals_SS, WCBA_SS_Status, WCBA_Meals_SW, Population_WCBA, WCBA_Status_Existing_SS, WCBA_Existing_SS,
     
-    Child_Meals_SS, Child_SS_Status,  Child_Existing_SW, Child_Meals_SW, Population_Child, Child_Status_Existing_SS, Child_Existing_SS,
+    Child_Meals_SS, Child_SS_Status, Child_Meals_SW, Population_Child, Child_Status_Existing_SS, Child_Existing_SS,
   )
-
-
-# Delete variables. 
-Hg_merged_all_4 <- subset(Hg_merged_all_3, select = -c(GP_Existing_SW, WCBA_Existing_SW, Child_Existing_SW) )
 
 
 # Analysis 1: 
   # Data should be filtered for all waterbodies and species that have new data from the past year’s sampling efforts.
-    Hg_merged_all_4 <- Hg_merged_all_4 %>% filter(Waterbody %in% c("name 1", "name 2"))
+  filter((Waterbody == "Puett Reservoir" & Species == "Northern Pike") |
+           (Waterbody == "Puett Reservoir" & Species == "Walleye") |
+           (Waterbody == "Vallecito Reservoir" & Species == "Walleye") |
+           (Waterbody == "Vallecito Reservoir" & Species == "Northern Pike") |
+           (Waterbody == "Totten Reservoir" & Species == "Northern Pike") |
+           (Waterbody == "Totten Reservoir" & Species == "Walleye") |
+           (Waterbody == "Totten Reservoir" & Species == "Northern Pike") |
+           (Waterbody == "Rocky Mountain Lake" & Species == "Bluegill") |
+           (Waterbody == "Grand Lake" & Species == "Longnose Sucker") |
+           (Waterbody == "Grand Lake" & Species == "Lake Trout(Mackinaw") |
+           (Waterbody == "Grand Lake" & Species == "Lake Trout(Mackinaw") |
+           (Waterbody == "Grand Lake" & Species == "Brown Trout") |
+           (Waterbody == "Grand Lake" & Species == "White Sucker") |
+           (Waterbody == "Berkeley Lake" & Species == "Black Bullhead"))
 
 #Analysis 2:
-  # Comment out the code for Analysis 1.
+  # Comment out the code for Analysis 1. Ctrl + Shift + C comments entire paragraphs
   # Data should be filtered for only waterbodies and species that were flagged as “Check” for combining data.
-  # Refer to the directions https://docs.google.com/document/d/1lfdzhNsoDDAhJYl3eXi1__ACXD7BlaDGoU858Q6SMlE/edit
-  # Hg_merged_all_4 <- Hg_merged_all_4 %>% filter(Waterbody %in% c("name 1", "name 2"))
 
+  # Hg_merged_all_4 <- Hg_merged_all_3 %>%
+  #   filter((Waterbody == "Puett Reservoir" & Species == "Northern Pike") |
+  #            (Waterbody == "Puett Reservoir" & Species == "Walleye") |
+  #            (Waterbody == "Vallecito Reservoir" & Species == "Walleye") |
+  #            (Waterbody == "Totten Reservoir" & Species == "Walleye") |
+  #            (Waterbody == "Berkeley Lake" & Species == "Black Bullhead"))
 
 # The data frame below has FCA recommendations for all populations and includes lifted, updated, and
 # brand new advisories, as well as species that don't require an advisory and never had one.
