@@ -7,8 +7,13 @@ library(broom)
 # library(ggpubr)
 library(readr)
 library("tidyverse")
+library(readr)
+
 
 # Use the "HgData_Clean" data frame from the cleaning R script.
+
+# Correct the file path by using forward slashes or double backslashes
+HgData_Clean<- read_csv("X:\\My Drive\\R\\FCAs\\Hg_FCA_Template\\03_Clean_Data\\Hg_CleanedMaster_2024.csv")
 
 # Turn off scientific notation
   options(scipen = 999)
@@ -39,19 +44,20 @@ HgData_Statewide= HgData_Statewide %>% select(Species, Old_Species_Codes,Species
 
 # GENERAL POPULATION Statewide Advisory Calculations.
 HgData_Statewide1=HgData_Statewide %>%
-  mutate(GP_MealsPerMonth=case_when(Average_Result_SW>0 & Average_Result_SW <=.04 ~24,
-                                    Average_Result_SW>0.04 & Average_Result_SW <=0.05 ~20,
-                                    Average_Result_SW>0.05 & Average_Result_SW <=0.07 ~16,
-                                    Average_Result_SW>0.07 & Average_Result_SW <=0.09 ~12,
-                                    Average_Result_SW>0.09 & Average_Result_SW <=0.13 ~8,
-                                    Average_Result_SW>0.13 & Average_Result_SW <=0.27 ~4,
-                                    Average_Result_SW>0.27 & Average_Result_SW <=0.36 ~3,
-                                    Average_Result_SW>0.36 & Average_Result_SW <=0.53 ~2,
-                                    Average_Result_SW>0.53 & Average_Result_SW <=1.07 ~1,
-                                    Average_Result_SW>1.07 & Average_Result_SW <=2.14 ~.5,
-                                    Average_Result_SW>2.14 & Average_Result_SW <=4.28 ~.25,
+  mutate(GP_MealsPerMonth=case_when(Average_Result_SW>0 & Average_Result_SW <=.10 ~24,
+                                    Average_Result_SW>0.10 & Average_Result_SW <=0.12 ~20,
+                                    Average_Result_SW>0.12 & Average_Result_SW <=0.15 ~16,
+                                    Average_Result_SW>0.15 & Average_Result_SW <=0.2 ~12,
+                                    Average_Result_SW>0.2 & Average_Result_SW <=0.29 ~8,
+                                    Average_Result_SW>0.29 & Average_Result_SW <=0.59 ~4,
+                                    Average_Result_SW>0.59 & Average_Result_SW <=0.78 ~3,
+                                    Average_Result_SW>0.78 & Average_Result_SW <=1.17 ~2,
+                                    Average_Result_SW>1.17 & Average_Result_SW <=2.34 ~1,
+                                    Average_Result_SW>2.34 & Average_Result_SW <=4.68 ~.5,
+                                    Average_Result_SW>4.68 & Average_Result_SW <=9.37 ~.25,
                                     TRUE~0))
-                                  
+
+
 
 # Create a variable that determines whether advisory has changed from existing advisory;
 # This will always need to be updated based on the existing statewide advisory.
@@ -150,7 +156,7 @@ HgData_Statewide1 = HgData_Statewide1 %>%
 
 
 # Renaming the dataframe
-HgData_Statewide_Final_20XX <- HgData_Statewide1 
+HgData_Statewide_Final_2024 <- HgData_Statewide1 
 
 # This is your final statewide advisory dataframe: "HgData_Statewide_Final_20XX."
 # Always format as: "HgData_Statewide_Final_20XX."
@@ -158,8 +164,8 @@ HgData_Statewide_Final_20XX <- HgData_Statewide1
 # Export the statewide advisory and use it until the next update. 
 # Customize the file path
 
-#library("writexl")
-#write_xlsx(HgData_Statewide_Final_20XX, "C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/04_Output/Hg_2024_Update/Statewide_Hg_Advisory/Hg_Statewide_Final_20XX.xlsx")
+library("writexl")
+write_xlsx(HgData_Statewide_Final_2024, "X:/Shared drives/_CDPHE TEEO TARA/PFAS 🔥/Data Integration and Assessment/Fish/FCAs/PFOS FCAs/Annual FCA Updates/PFOS_FCA_2024/04_Output/Statewide_Hg_Advisory/Hg_Statewide_Final_2024.xlsx")
 
 
 
