@@ -52,14 +52,14 @@ Hg_SS_LiftedUpdatedNew <- bind_rows(HgSS_Final_AllPops_Yes, HgSS_Final_AllPops_L
 Hg_SS_LiftedUpdatedNew1 <- Hg_SS_LiftedUpdatedNew %>%
   distinct(Waterbody, Species, Average_Result, .keep_all = TRUE)
 
-# Upload the CPW Regional Waterbodies
-CPWRegions <- read_excel("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/01_Raw_Data/Lakes_with_CPWAreaRegion_County.xlsx")
-
-# Merge the regional waterbodies with the Hg_SS_LiftedUpdatedNew1 dataset.
-Hg_SS_LiftedUpdatedNew2 <- merge(Hg_SS_LiftedUpdatedNew1, CPWRegions[, c("Waterbody","REGION")], by = "Waterbody", all.x = TRUE)
+# # Upload the CPW Regional Waterbodies
+# CPWRegions <- read_excel("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/01_Raw_Data/Lakes_with_CPWAreaRegion_County.xlsx")
+# 
+# # Merge the regional waterbodies with the Hg_SS_LiftedUpdatedNew1 dataset.
+# Hg_SS_LiftedUpdatedNew2 <- merge(Hg_SS_LiftedUpdatedNew1, CPWRegions[, c("Waterbody","REGION")], by = "Waterbody", all.x = TRUE)
 
 # Make sure all rows are distinct
-Hg_SS_LiftedUpdatedNew_FINAL <- Hg_SS_LiftedUpdatedNew2 %>%
+Hg_SS_LiftedUpdatedNew_FINAL <- Hg_SS_LiftedUpdatedNew1 %>%
   distinct(Waterbody, Species, Average_Result, .keep_all = TRUE)
 
 

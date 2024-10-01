@@ -1,22 +1,26 @@
-# R SCRIPT FOR CLEANING THE MERCURY DATA set
+# R SCRIPT FOR CLEANING THE NEW MERCURY DATA & MERGING WITH EXISTING DATA
 
 # importing xlsx files of raw data from the past year's sampling efforts 
 install.packages("readxl")
 library(readxl)
 
-# sub this out for the new data
-HgData <- read_excel("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/01_Raw_Data/HgData_Raw.xlsx")
+# Import the new data
+HgData <- read_excel("X:\\Shared drives\\_CDPHE TEEO TARA\\PFAS 🔥\\Data Integration and Assessment\\Fish\\FCAs\\Mercury FCAs\\Annual FCA updates\\2024 Update\\Hg_FCA_2024\\01_Raw_Data\\HgData_Raw_2023.xlsx")
 
-# Step 1: Rename variables with long names. The variable number position may change with
-# different datasets. Double check before running.
-names(HgData)[23]='Tissue_Type'
-names(HgData)[12]='Sample_Year'
-names(HgData)[1] = 'Data_Cleaning_Notes'
-names(HgData)[6]='Qualifier'
-names(HgData)[10]='MDL_PQL'
+# Import the master dataset from the previous year (already cleaned)
+HgData_Master <- read_excel("X:\\Shared drives\\_CDPHE TEEO TARA\\PFAS 🔥\\Data Integration and Assessment\\Fish\\FCAs\\Mercury FCAs\\Annual FCA updates\\2024 Update\\Hg_FCA_2024\\03_Clean_Data\\Hg_CleanedMaster_2022.xlsx")
 
-# Confirm variable names changed.
+# check variable names in new data and master dataset to make sure they are the same
+colnames(HgData_Master)
 colnames(HgData)
+
+# Step 1: Rename variables with long names or names that are not the same as the master dataset you will eventually merge the new data with.
+# WILL REQUIRE MAJOR UPDATE WHEN LAB STARTS USING VARIABLE NAMES IN FISH DATA TEMPLATE
+HgData <- HgData %>% rename ("Result" ="Hg (mg/kg)", "Waterbody" = "Waterbody1")
+
+# Rename variables in the master dataset if necessary
+HgData_Master <- HgData_Master %>% rename ("MDL" = "MDL_PQL")
+
 
 # Step 2: Remove samples where tissue type = "O" or "E" (keep M & plug only)
 HgData_1 <- HgData[HgData$Tissue_Type %in% c('M','Plug'),]
@@ -93,24 +97,14 @@ HgData_2 <- HgData_1 %>%
 # Confirm that new variable with full specie's names was correctly added to the dataframe
 table(HgData_2$Species1)
 
-# Step 4:Lump waterbodies together if they have multiple names for the same waterbody
+# Step 4:Rename waterbodies in the new dataset where there is a discrepancy with the old master dataset
+#  Do this by generating a table of the waterbody names and searching them in the master dataset
 
-  # Example below:
+table(HgData_2$Waterbody)
 
-  #5a. "Aglient Pond A", "Agilent Pond B", & "Agilent Ponds" = "Agilent Ponds"
-  #5b. "Carter Lake" & "Carter Reservoir" = "Carter Lake"
-  #5c. "Yampa River", "Yampa River 2", & "Yampa River 3" = "Yampa River"
-  #5d. "North Delaney Reservoir" & "North Delaney Reservoir Reservoir" = "North Delaney Reservoir"
-  #5e. "North Sterling Reservoir" & " North Sterling Lake" = "North Sterling Reservoir"
-  #5f. "Shadow Mountain Lake" & "Shadow Mountain Reservoir" = "Shadow Mountain Lake"
-HgData_3 <- HgData_2 %>%
-  mutate(Waterbody = case_when(Waterbody1 %in% c("Agilent Pond A", "Agilent Pond B", "Agilent Ponds") ~ "Agilent Ponds",
-                               Waterbody1 %in% c("Carter Lake","Carter Reservoir") ~ "Carter Lake",
-                               Waterbody1 %in% c("Yampa River","Yampa River 2","Yampa River 3") ~ "Yampa River",
-                               Waterbody1 %in% c("North Delaney Reservoir","North Delaney Reservoir Reservoir") ~ "North Delaney Reservoir",
-                               Waterbody1 %in% c("North Sterling Reservoir","North Sterling Lake") ~ "North Sterling Reservoir",
-                               Waterbody1 %in% c("Shadow Mountain Lake","Shadow Mountain Reservoir") ~ "Shadow Mountain Lake",
-                               TRUE ~ Waterbody1))
+# Example code to rename waterbodies
+# HgData_2 <- HgData_1 %>% mutate(Waterbody = case_when(Waterbody == "Jumbo Annex" ~ "Jumbo Lake"),
+#           TRUE ~ Waterbody)
 
 
 # Step 5:Create a new variable, Species_Codes, with fish subspecies lumped together.
@@ -127,8 +121,15 @@ HgData_3=HgData_3 %>%
                                    TRUE~Species1))
 
 
-# Step 6: Create a new variable for whether a fish species is commonly consumed
-  HgData_4 <- HgData_4 %>%
+# Step 6:Create new column denoting whether a species is in the existing statewide advisory. 
+HgData_3 <- HgData_3 %>%
+  mutate(In_Existing_Advisory = case_when(Species1 %in% c("GRA", "SQF", "CFI", "FMS","GSD","GSF","HBG", 
+                                                    "PKS", "SPB","TRT","SXX") ~ "No",
+                                          TRUE ~ "Yes"))
+
+
+# Step 7: Create a new variable for whether a fish species is commonly consumed
+  HgData_4 <- HgData_3 %>%
   mutate(Commonly_Consumed = case_when(Species1 %in% c("SQF", "CFI","FMS","GSD","GSF") ~ "No",
                                       TRUE ~ "Yes"))
 
@@ -139,43 +140,46 @@ HgData_3=HgData_3 %>%
   mutate(Result=case_when(Qualifier == "<"~ MDL_PQL,
                                     TRUE~ Result))
   
-# Step 8: Create a new variable for fish length in inches based on the variable for length in mm
+  # Step 8: Create a new variables if missing from new dataset but present in the master data
+  HgData_5$Sample_Year <- 2023
+  HgData_5$Tissue_Type <- "M"
+  HgData_5$Units <- "mg/Kg"
+  
+  
+# Step 9: Create a new variable for fish length in inches based on the variable for length in mm
   HgData_5$Length_Inches <- HgData_5$`Length (mm)`/25.4
   
-# Step 9: Delete the column Data_Cleaning_Notes 
-  HgData_5 <- select( HgData_5,- Data_Cleaning_Notes)
+# Step 10: Delete unnecessary columns
+  HgData_5 <- select( HgData_5,- Species1, - Data_Cleaning_Notes)
   
-# Step 10: Rename Species1 (the original species code variable)
-  names(HgData_5)[18]="Old_Species_Codes"
-  
-# Confirm rename worked
-  colnames(HgData_5)
-  
-  
-# Step 11: Merge the new and cleaned data (HgData_5) with the cleaned master dataset from the previous year’s update.
-# This should be done using the bind rows function to append rows form each DF.
-# This master dataset will be formatted as "Hg_CleanedMaster_PreviousYear."
-  
-  # For the 2024 update with the new 2023 data - the master dataset is saved in the output folder of the 
-  # Hg_FCA project and titled "Hg_CleanedMaster_2024"
 
-  Hg_CleanedMaster_20XX <- bind_rows(HgData_5, Hg_CleanedMaster_2024)
+# Step 11: Reconcile different data types in the master vs new dataset
+  class(HgData_Master$`Length (mm)`)
+  HgData_Master$`Length (mm)`<- as.numeric(HgData_Master$`Length (mm)`)
+  HgData_Master$`Weight (g)`<- as.numeric(HgData_Master$`Weight (g)`)
+  HgData_Master$Length_Inches<- as.numeric(HgData_Master$Length_Inches)
+  HgData_Master$Length_Inches<- as.numeric(HgData_Master$Length_Inches)
   
   
-# Step 12: filter out crayfish and trout unspecified because these species should not be included in the cleaned data
+# Step 12: Merge master dataset with new cleaned dataframe
+# Combine dataframes by appending rows
+  HgData_5 <- bind_rows(HgData_Master, HgData_5, .id = "Source")
+  
+
+# Step 13: filter out crayfish and trout unspecified because these species should not be included in the cleaned data
 # Trout-unspecified is not a species and Crayfish is not a fish.
-  HgData_Clean <- subset(Hg_CleanedMaster_20XX, !Species %in% c("Crayfish", "Trout - unspecified"))
-  
-  # This is your cleaned data frame you will use for the subsequent scripts. 
-  # HgData_Clean
-
-# Export the data frame as a cleaned master dataset to save for next year's analysis.
-# You will need to change the export destination
-  
-#library("writexl")
-#Write_xlsx(HgData_Clean,"C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/03_Clean_Data//Hg_CleanedMaster_20XX.xlsx")
+  HgData_Clean <- subset(HgData_5, !Species %in% c("Crayfish", "Trout - unspecified"))
   
   
+# This is your cleaned data frame you will use in subsequent scripts.
+  HgData_Clean
+  
+# Export the data frame as a cleaned master dataset for next year's analysis. 
+# Title with the following format: “Hg_CleanedMaster_CurrentYear”
+  
+# library("writexl")
+# write_xlsx(HgData_Clean,"X:\\Shared drives\\_CDPHE TEEO TARA\\PFAS 🔥\\Data Integration and Assessment\\Fish\\FCAs\\Mercury FCAs\\Annual FCA updates\\2024 Update\\Hg_FCA_2024\\03_Clean_Data\\Hg_CleanedMaster_20XX.xlsx")
+ 
 
   
 

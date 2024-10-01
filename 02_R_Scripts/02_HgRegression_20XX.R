@@ -8,7 +8,9 @@ library(broom)
 library(readr)
 library("tidyverse")
 
-# Use the "HgData_Clean" data frame from the cleaning R script
+# Use the "HgData_Clean" data frame from the cleaning R script or import clean data for this years update
+HgData_Clean <- read_excel("X:\\Shared drives\\_CDPHE TEEO TARA\\PFAS 🔥\\Data Integration and Assessment\\Fish\\FCAs\\Mercury FCAs\\Annual FCA updates\\2024 Update\\Hg_FCA_2024\\03_Clean_Data\\Hg_CleanedMaster_2024.xlsx")
+
 
 # Turn off scientific notation
 options(scipen = 999)

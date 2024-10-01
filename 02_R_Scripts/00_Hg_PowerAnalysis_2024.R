@@ -2,14 +2,18 @@ library(ggplot2)
 library(dplyr)
 library(broom)
 # library(ggpubr)
+library(readxl)
 library(readr)
 library("tidyverse")
 
 
 # Upload the THE CLEANED MERCURY DATASET
-# Switch out for the master dataset from the most recent year of analysis.
-# Currently the most recent master dataset is "Hg_CleanedMaster_2024"
-HgData_Clean_Power <- read_csv("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/03_Clean_Data/HgData_Clean_Power.csv")
+# This power analysis should be conducted every 10 years
+# The most recent power analysis was conducted in 2024 using the "Hg_CleanedMaster_2022" dataset
+# The next power analysis should be conducted in 2034
+HgData_Clean_Power <- read_excel("X:\\Shared drives\\_CDPHE TEEO TARA\\PFAS 🔥\\Data Integration and Assessment\\Fish\\FCAs\\Mercury FCAs\\Annual FCA updates\\2024 Update\\Hg_FCA_2024\\03_Clean_Data\\Hg_CleanedMaster_2022.xlsx")
+
+
 
 # POWER ANALYSIS FOR MERCURY DATA
 

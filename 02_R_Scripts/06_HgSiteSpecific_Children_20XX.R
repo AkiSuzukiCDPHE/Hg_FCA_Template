@@ -28,7 +28,7 @@ Hg_SS2 <- Hg_SS %>%
 # This operation ensures that duplicate rows based on Waterbody are removed while preserving the values of other variables.
 
 Hg_SS2= distinct(Hg_SS2, Waterbody, .keep_all = TRUE) %>%
-  select(Waterbody, Species, Old_Species_Codes, Species_Codes, Analyte1, Average_Result, Units, Num_Obs, 
+  select(Waterbody, Species, Species_Codes, Average_Result, Units, Num_Obs, 
          Commonly_Consumed,Length_Inches,Pred_Length, FishType)
 
 
@@ -37,11 +37,11 @@ Hg_SS3=Hg_SS2 %>%
   mutate(Children_MealsPerMonth=case_when(Average_Result>0 & Average_Result <=0.011 ~24,
                                           Average_Result>0.011 & Average_Result <=0.013 ~20,
                                           Average_Result>0.013 & Average_Result <=0.016 ~16,
-                                          Average_Result>0.016 & Average_Result <=0.022 ~12,
-                                          Average_Result>0.022 & Average_Result <=0.033 ~8,
-                                          Average_Result>0.033 & Average_Result <=0.065 ~4,
-                                          Average_Result>0.065 & Average_Result <=0.087 ~3,
-                                          Average_Result>0.087 & Average_Result <=0.13 ~2,
+                                          Average_Result>0.016 & Average_Result <=0.02 ~12,
+                                          Average_Result>0.02 & Average_Result <=0.03 ~8,
+                                          Average_Result>0.03 & Average_Result <=0.07 ~4,
+                                          Average_Result>0.07 & Average_Result <=0.09 ~3,
+                                          Average_Result>0.09 & Average_Result <=0.13 ~2,
                                           Average_Result>0.13 & Average_Result <=0.26 ~1,
                                           Average_Result>0.26 & Average_Result <=0.52 ~.5,
                                           Average_Result>0.52 & Average_Result <=1.04 ~.25,
@@ -139,7 +139,7 @@ Hg_Child_SS_Merged <- bind_rows(Hg_SS6_SW, Hg_SS6_NoSW)
 # Upload the existing advisories dataset
 # This will change every year but always needs to include all existing advisories.
 library(readxl)
-Hg_Existing_SSAdvisories=read_excel("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/01_Raw_Data/Hg_Existing_SS.xlsx")
+Hg_Existing_SSAdvisories=read_excel("X:\\Shared drives\\_CDPHE TEEO TARA\\PFAS 🔥\\Data Integration and Assessment\\Fish\\FCAs\\Mercury FCAs\\Annual FCA updates\\2024 Update\\Hg_FCA_2024\\01_Raw_Data\\Hg_Existing_SS.xlsx")
 
 
 # Filtering the data frame for only Children

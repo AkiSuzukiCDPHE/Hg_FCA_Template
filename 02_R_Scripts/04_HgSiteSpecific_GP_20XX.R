@@ -27,24 +27,24 @@ Hg_SS2 <- Hg_SS %>%
 # This operation ensures that duplicate rows based on Waterbody are removed while
 # preserving the values of other variables.
 Hg_SS2= distinct(Hg_SS2, Waterbody, .keep_all = TRUE) %>%
-  select(Waterbody, Species, Old_Species_Codes, Species_Codes, Analyte1, Average_Result, Units,
+  select(Waterbody, Species, Species_Codes, Average_Result, Units,
          Num_Obs, Commonly_Consumed,Length_Inches,Pred_Length, FishType)
 
 
 # Assign meal frequency recommendations for site-specific advisories using the
 # data frame with sufficient sample sizes
 Hg_SS3=Hg_SS2 %>%
-  mutate(GP_MealsPerMonth=case_when(Average_Result>0 & Average_Result <=.04 ~24,
-                                    Average_Result>0.04 & Average_Result <=0.05 ~20,
-                                    Average_Result>0.05 & Average_Result <=0.07 ~16,
-                                    Average_Result>0.07 & Average_Result <=0.09 ~12,
-                                    Average_Result>0.09 & Average_Result <=0.13 ~8,
-                                    Average_Result>0.13 & Average_Result <=0.27 ~4,
-                                    Average_Result>0.27 & Average_Result <=0.36 ~3,
-                                    Average_Result>0.36 & Average_Result <=0.53 ~2,
-                                    Average_Result>0.53 & Average_Result <=1.07 ~1,
-                                    Average_Result>1.07 & Average_Result <=2.14 ~.5,
-                                    Average_Result>2.14 & Average_Result <=4.28 ~.25,
+  mutate(GP_MealsPerMonth=case_when(Average_Result>0 & Average_Result <=.10 ~24,
+                                    Average_Result>0.10 & Average_Result <=0.12 ~20,
+                                    Average_Result>0.12 & Average_Result <=0.15 ~16,
+                                    Average_Result>0.15 & Average_Result <=0.20 ~12,
+                                    Average_Result>0.20 & Average_Result <=0.29 ~8,
+                                    Average_Result>0.29 & Average_Result <=0.59 ~4,
+                                    Average_Result>0.59 & Average_Result <=0.78 ~3,
+                                    Average_Result>0.78 & Average_Result <=1.17 ~2,
+                                    Average_Result>1.17 & Average_Result <=2.34 ~1,
+                                    Average_Result>2.34 & Average_Result <=4.68 ~.5,
+                                    Average_Result>4.68 & Average_Result <=9.37 ~.25,
                                     TRUE~0))
 
 
@@ -59,7 +59,7 @@ Hg_SS3=Hg_SS2 %>%
 # Upload the existing statewide advisories data set.
 # Always use the most recently updated statewide advisory.
 library(readxl)
-Hg_Statewide_Final_2024=read_excel("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/04_Output/Hg_2024_Update/Statewide_Hg_Advisory/Hg_Statewide_Final_2024.xlsx")
+Hg_Statewide_Final_2024=read_excel("X:\\Shared drives\\_CDPHE TEEO TARA\\PFAS 🔥\\Data Integration and Assessment\\Fish\\FCAs\\Mercury FCAs\\Annual FCA updates\\2024 Update\\Hg_FCA_2024\\04_Output\\Hg_2024_Update\\Statewide_Hg_Advisory\\Hg_Statewide_Final_2024.xlsx")
 
 
 # Merge the data frame with calculated site-specific advisories "Hg_SS3" with the Hg statewide advisory dataframe
@@ -136,7 +136,8 @@ Hg_GP_SS_Merged <- bind_rows(Hg_SS6_SW, Hg_SS6_NoSW)
 
 # Upload the existing advisories dataset
 # This will change every year but always needs to include all existing advisories.
-Hg_Existing_SSAdvisories=read_excel("C:/Users/oasuzuki/Documents/R/FCAs/Hg_FCA/01_Raw_Data/Hg_Existing_SS.xlsx")
+# Upload new version!!!
+Hg_Existing_SSAdvisories=read_excel("X:\\Shared drives\\_CDPHE TEEO TARA\\PFAS 🔥\\Data Integration and Assessment\\Fish\\FCAs\\Mercury FCAs\\Annual FCA updates\\2024 Update\\Hg_FCA_2024\\01_Raw_Data\\Hg_Existing_SS.xlsx")
 
 # Filter the data frame for the General Population
 Hg_Existing_SSAdvisories %>% select(ExistingSS_Size) %>% distinct()

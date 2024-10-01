@@ -8,10 +8,10 @@ library(dplyr)
 
 # Merge data from all three population's dataframe's
 Hg_merged_all_1 <- merge(merge(Hg_GP_SS_Merged2, Hg_WCBA_SS_Merged2, by = c("Waterbody", "Species_Codes", 
-  "Old_Species_Codes", "Species", "Average_Result", "Units", "Num_Obs", "FishType", "Analyte1", 
+   "Species", "Average_Result", "Units", "Num_Obs", "FishType",  
   "Commonly_Consumed", "Length_Inches", "Pred_Length"), all = TRUE), Hg_Child_SS_Merged2, by = c("Waterbody", 
-  "Species_Codes", "Old_Species_Codes", "Species", "Average_Result", "Units", "Num_Obs", "FishType",
-  "Analyte1", "Commonly_Consumed", "Length_Inches", "Pred_Length"), all = TRUE)
+  "Species_Codes", "Species", "Average_Result", "Units", "Num_Obs", "FishType",
+   "Commonly_Consumed", "Length_Inches", "Pred_Length"), all = TRUE)
 
 
 # Rename variables to be easily understood in output
@@ -49,7 +49,7 @@ Hg_merged_all_2 <- Hg_merged_all_1 %>%
 # Reorder variables
 Hg_merged_all_3 <- Hg_merged_all_2 %>%
   select(
-    Waterbody, Species_Codes, Old_Species_Codes, Species, Average_Result, Units, Num_Obs, FishType, Analyte1, Commonly_Consumed, Length_Inches, Pred_Length, 
+    Waterbody, Species_Codes, Species, Average_Result, Units, Num_Obs, FishType,Commonly_Consumed, Length_Inches, Pred_Length, 
     
     GP_Meals_SS, GP_SS_Status, GP_Meals_SW,  Population_GP, GP_Status_Existing_SS, GP_Existing_SS,
     
